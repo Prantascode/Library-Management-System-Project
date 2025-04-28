@@ -69,6 +69,13 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 	</dependency>
+	<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.32</version> <!-- latest version as of early 2025 -->
+    <scope>provided</scope>
+</dependency>
+
 
 	</dependencies>
 
