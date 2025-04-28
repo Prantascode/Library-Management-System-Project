@@ -1,9 +1,6 @@
 package com.pranta.LibraryMangement.Entity;
 
 import java.time.LocalDate;
-
-import com.pranta.LibraryMangement.Model.Book;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,7 +25,7 @@ public class BorrowedBookEntity {
     private UserEntity user;
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private BookEntity book;
     private LocalDate issuDate;
     private LocalDate returnDate;
     private Double fine;
