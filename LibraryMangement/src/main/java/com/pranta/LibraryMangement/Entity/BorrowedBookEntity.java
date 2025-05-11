@@ -25,7 +25,7 @@ public class BorrowedBookEntity {
     private User user;
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private BookEntity book;
+    private Book book;
     private LocalDate issuDate;
     private LocalDate returnDate;
     private Double fine;
