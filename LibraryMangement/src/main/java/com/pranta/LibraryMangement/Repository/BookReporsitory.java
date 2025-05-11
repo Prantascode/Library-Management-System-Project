@@ -20,4 +20,7 @@ public interface BookReporsitory extends JpaRepository<Book, Long> {
            + "LOWER(b.category) LIKE LOWER(CONCAT('%', :keyword, '%'))")
            List<Book> searchBooks(@Param("keyword") String keyword);
 
+           List<Book> findByAvailableCopiesGreaterThan(Integer count);
+           List<Book> findAllByOrderByAddedDateDesc();
+           List<Book> findAllByOrderByAvailableCopiesDesc();
 }
