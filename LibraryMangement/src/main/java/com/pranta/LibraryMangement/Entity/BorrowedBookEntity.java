@@ -22,7 +22,7 @@ public class BorrowedBookEntity {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
-    private UserEntity user;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private BookEntity book;
