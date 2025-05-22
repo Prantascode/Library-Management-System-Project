@@ -3,7 +3,6 @@ package com.pranta.LibraryMangement.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pranta.LibraryMangement.Model.BorrowedBook;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

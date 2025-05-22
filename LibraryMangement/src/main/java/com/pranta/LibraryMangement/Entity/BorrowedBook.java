@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "borrowed_books")
-public class BorrowedBookEntity {
+public class BorrowedBook {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +34,7 @@ public class BorrowedBookEntity {
     private Book book;
 
     @Column(nullable = false)
-    private LocalDate issuDate;
+    private LocalDate issueDate;
     @Column
     private LocalDate returnDate;
     @Column
@@ -45,8 +45,8 @@ public class BorrowedBookEntity {
 
     @PrePersist
     protected void onCreate(){
-        if (issuDate == null) {
-            issuDate = LocalDate.now();
+        if (issueDate == null) {
+            issueDate = LocalDate.now();
         }
         fine = 0.0;
     }

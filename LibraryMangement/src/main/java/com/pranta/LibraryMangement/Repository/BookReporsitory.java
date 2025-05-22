@@ -11,7 +11,7 @@ import com.pranta.LibraryMangement.Entity.Book;
 
 @Repository
 public interface BookReporsitory extends JpaRepository<Book, Long> {
-    List<Book> findByTitleContaning(String title);
+    List<Book> findByTitleContaining(String title);
     List<Book> findByAuthor(String author);
     List<Book> findByCategory(String category);
 

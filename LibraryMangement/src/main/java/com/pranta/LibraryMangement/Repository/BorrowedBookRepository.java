@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.pranta.LibraryMangement.Entity.BorrowedBook;
 import com.pranta.LibraryMangement.Entity.User;
-import com.pranta.LibraryMangement.Model.BorrowedBook;
 
 @Repository
 public interface BorrowedBookRepository extends JpaRepository<BorrowedBook, Long> {
     List<BorrowedBook> findByUserAndReturnedFalse(User user);
-    List<BorrowedBook> findBYReturnedFalse();
+    List<BorrowedBook> findByReturnedFalse();
     @Query("SELECT bb FROM BorrowedBook bb WHERE bb.user.id = :userId AND bb.book.id = :bookId AND bb.returned = false")
     Optional<BorrowedBook> findActiveBookBorrowByIdAndBookId(
         @Param("userId") Long userId,
