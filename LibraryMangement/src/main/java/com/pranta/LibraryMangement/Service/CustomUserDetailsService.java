@@ -2,6 +2,7 @@ package com.pranta.LibraryMangement.Service;
 
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +14,8 @@ import com.pranta.LibraryMangement.Repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
+    
+    @Autowired
     private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository){
