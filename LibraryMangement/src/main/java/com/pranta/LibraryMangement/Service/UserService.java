@@ -55,7 +55,7 @@ public class UserService {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("User not found email : "+email));
     }
-
+    
     private UserResponseDto mapToResponseDto(User user) {
         UserResponseDto responseDto = new UserResponseDto();
         responseDto.setId(user.getId());

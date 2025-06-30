@@ -3,9 +3,11 @@ package com.pranta.LibraryMangement.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.pranta.LibraryMangement.DTOs.DTO.BookDto;
 import com.pranta.LibraryMangement.Entity.Book;
@@ -14,7 +16,7 @@ import com.pranta.LibraryMangement.Exception.ResourceNotFoundException;
 import com.pranta.LibraryMangement.Repository.BookReporsitory;
 
 import jakarta.transaction.Transactional;
-
+@Service
 public class BookService {
     private final BookReporsitory bookReporsitory;
     
@@ -77,6 +79,50 @@ public class BookService {
     }
     public List<BookDto> getAllBooks(){
         List<Book> books = bookReporsitory.findAll();
+        return books.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    public List<BookDto> searchBook(String keyword){
+        List<Book> books = bookReporsitory.searchBooks(keyword);
+        return books.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    public List<BookDto> findByTitle(String title){
+        List<Book> books = bookReporsitory.findByTitleContainingIgnoreCase(title);
+            return books.stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+        
+    }
+    public List<BookDto> findByAuthor(String author){
+        List<Book> books = bookReporsitory.findByAuthorContainingIgnoreCase(author);
+        return books.stream()
+            .map(this::mapToDto)
+            .collect(Collectors.toList());
+    }
+    public List<BookDto> findByCategory(String category){
+        List<Book> books = bookReporsitory.findByCategoryContainingIgnoreCase(category);
+        return books.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    public List<BookDto> findAvailableBooks(){
+        List<Book> books = bookReporsitory.findByAvailableCopiesGreaterThan(0);
+        return books.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    public List<BookDto> findBooksByNewest(){
+        List<Book> books = bookReporsitory.findAllByOrderByAvailableCopiesDesc();
+        return books.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+
+    }
+    public List<BookDto> findBooksByMostAvailable(){
+        List<Book> books = bookReporsitory.findAllByOrderByAvailableCopiesDesc();
         return books.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());

@@ -11,9 +11,9 @@ import com.pranta.LibraryMangement.Entity.Book;
 
 @Repository
 public interface BookReporsitory extends JpaRepository<Book, Long> {
-    List<Book> findByTitleContaining(String title);
-    List<Book> findByAuthor(String author);
-    List<Book> findByCategory(String category);
+    List<Book> findByTitleContainingIgnoreCase(String title);
+    List<Book> findByAuthorContainingIgnoreCase(String author);
+    List<Book> findByCategoryContainingIgnoreCase(String category);
 
      @Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
            + "LOWER(b.author) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
