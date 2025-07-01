@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pranta.LibraryMangement.DTOs.DTO.LogicResponseDto;
+import com.pranta.LibraryMangement.DTOs.DTO.LoginResponseDto;
 import com.pranta.LibraryMangement.DTOs.DTO.LoginRequestDto;
 import com.pranta.LibraryMangement.DTOs.DTO.UserRegistrationDto;
 import com.pranta.LibraryMangement.DTOs.DTO.UserResponseDto;
@@ -16,9 +16,11 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
     
     private final AuthService authService;
@@ -31,8 +33,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LogicResponseDto> login( @Valid @RequestBody LoginRequestDto loginRequest) {
-        LogicResponseDto loginResponse = authService.login(loginRequest);
+    public ResponseEntity<LoginResponseDto> login( @Valid @RequestBody LoginRequestDto loginRequest) {
+        LoginResponseDto loginResponse = authService.login(loginRequest);
         return ResponseEntity.ok(loginResponse);
     }
     
@@ -41,4 +43,5 @@ public class AuthController {
         UserResponseDto userResponse = userService.registerUser(registrationDto);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
+    
 }

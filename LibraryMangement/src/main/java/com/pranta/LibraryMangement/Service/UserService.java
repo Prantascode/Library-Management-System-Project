@@ -33,7 +33,7 @@ public class UserService {
         User user = new User();
         user.setName(registrationDto.getName());
         user.setEmail(registrationDto.getEmail());
-        user.setPassword(registrationDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         user.setRole(registrationDto.getRole());
         User savedUser = userRepository.save(user);
         return mapToResponseDto(savedUser);
@@ -46,7 +46,7 @@ public class UserService {
         
     }
     public List<UserResponseDto> getAllStudents(){
-        List<User> students = userRepository.findByRole(User.UserRole.STUDENT);
+        List<User> students = userRepository.findAllByRole(User.UserRole.STUDENT);
         return students.stream()
             .map(this::mapToResponseDto)
             .collect(Collectors.toList());

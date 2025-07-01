@@ -15,9 +15,10 @@ import com.pranta.LibraryMangement.Repository.UserRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     
-    @Autowired
+   
     private final UserRepository userRepository;
 
+     @Autowired
     public CustomUserDetailsService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -30,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
             user.getEmail(),
             user.getPassword(),
-            Collections.singletonList(new SimpleGrantedAuthority("Role_" + user.getRole().name()))
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
     }
     

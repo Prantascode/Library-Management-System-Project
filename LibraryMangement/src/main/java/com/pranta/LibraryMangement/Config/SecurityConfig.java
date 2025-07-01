@@ -27,19 +27,20 @@ public class SecurityConfig {
 
         return authConfig.getAuthenticationManager();
     }
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-            .csrf(AbstractHttpConfigurer :: disable)
+             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .requestMatchers("/api/admain/**").hasRole("ADMIN")
+                .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .httpBasic(httpBasic -> {});
 
-            return http.build();
+        return http.build();
     }
 }

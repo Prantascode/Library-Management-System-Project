@@ -52,7 +52,7 @@ public class DTO {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class LogicResponseDto {
+    public static class LoginResponseDto {
         private String email;
         private String name;
         private User.UserRole role;
