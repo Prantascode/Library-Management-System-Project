@@ -18,6 +18,7 @@ public interface BookReporsitory extends JpaRepository<Book, Long> {
      @Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
            + "LOWER(b.author) LIKE LOWER(CONCAT('%', :keyword, '%')) OR "
            + "LOWER(b.category) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+           
            List<Book> searchBooks(@Param("keyword") String keyword);
 
            List<Book> findByAvailableCopiesGreaterThan(Integer count);

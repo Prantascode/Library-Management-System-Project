@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.pranta.LibraryMangement.DTOs.DTO.LoginResponseDto;
 import com.pranta.LibraryMangement.DTOs.DTO.LoginRequestDto;
 import com.pranta.LibraryMangement.Entity.User;
+import com.pranta.LibraryMangement.Exception.AuthenticationException;
 
 
 @Service
@@ -50,7 +51,7 @@ public class AuthService {
                 token
             );
         }catch (BadCredentialsException e){
-            throw new AuthenticationServiceException("Invalid email or password");
+            throw new AuthenticationException("Invalid email or password");
         }
     }
 }

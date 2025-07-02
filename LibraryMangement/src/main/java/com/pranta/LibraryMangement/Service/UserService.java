@@ -55,7 +55,12 @@ public class UserService {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("User not found email : "+email));
     }
-    
+    public void deleteUserById(Long id){
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id : "+id);
+        }
+        userRepository.deleteById(id);
+    }
     private UserResponseDto mapToResponseDto(User user) {
         UserResponseDto responseDto = new UserResponseDto();
         responseDto.setId(user.getId());
