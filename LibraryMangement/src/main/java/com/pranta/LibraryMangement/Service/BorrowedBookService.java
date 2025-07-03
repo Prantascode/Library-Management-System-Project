@@ -1,6 +1,9 @@
 package com.pranta.LibraryMangement.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +32,8 @@ public class BorrowedBookService {
 
     @Value("${library.fine.per-day}")
     private double finePerDay;
-
-    @Value("7")
+    
+    @Value("7") // Default to 7 days borrowing period
     private int borrowingPeriodDays;
 
     @Autowired
@@ -48,15 +51,18 @@ public class BorrowedBookService {
         Book book = bookReporsitory.findById(borrowedBookDto.getBookId())
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found with id : "+borrowedBookDto.getBookId()));
         
-        if (borrowedBookRepository.findActiveBookBorrowByIdAndBookId(user.getId(), book.getId()).isPresent()) {
+        // Check if user already has a copy of this book
+        if (borrowedBookRepository.findActiveBookBorrowByUserIdAndBookId(user.getId(), book.getId()).isPresent()) {
             throw new BadRequestException("User Already has a copy of this book");
         }
+        // Check if book is available
         if (book.getAvailableCopies()<=0) {
             throw new BadRequestException("No copies of this book are currently avilable");
         }
         book.setAvailableCopies(book.getAvailableCopies()-1);
         bookReporsitory.save(book);
 
+        // Create borrow record
         BorrowedBook borrowedBook = new BorrowedBook();
         borrowedBook.setUser(user);
         borrowedBook.setBook(book);
@@ -76,11 +82,69 @@ public class BorrowedBookService {
             throw new BadRequestException("Book has Already Retruned");
         }
         //Calculate fine if overdue
-        
+        LocalDate returnDate = LocalDate.now();
+        borrowedBook.setReturnDate(returnDate);
+        borrowedBook.setReturned(true);
 
+        LocalDate dueDate = borrowedBook.getIssueDate().plusDays(borrowingPeriodDays);
+        if (returnDate.isAfter(dueDate)) {
+            long daysLate = ChronoUnit.DAYS.between(dueDate, returnDate);
+            Double fine = daysLate * finePerDay;
+            borrowedBook.setFine(fine);
+        }
+        // Increase Available Books
+        Book book = borrowedBook.getBook();
+        book.setAvailableCopies(book.getAvailableCopies() + 1);
+        bookReporsitory.save(book);
+
+        BorrowedBook updateBorrowedBook = borrowedBookRepository.save(borrowedBook);
+        return mapToResponseDto(updateBorrowedBook);
 
     }
+    public BorrowedBookResponseDto getBorrowedBookById(Long id){
+        BorrowedBook borrowedBook = borrowedBookRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Borrowed Book not found with id : "+id));
 
+        return mapToResponseDto(borrowedBook);
+    }
+    public List<BorrowedBookResponseDto> getCurrentBorrowedBookByUser(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+userId));
+
+        List<BorrowedBook> borrowedBooks = borrowedBookRepository.findByUserAndReturnedFalse(user);
+        return borrowedBooks.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+     }
+    public List<BorrowedBookResponseDto> getAllCurrentBorrowedBooks(){
+        List<BorrowedBook> borrowedBooks = borrowedBookRepository.findByReturnedFalse();
+        return borrowedBooks.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+     }
+    public List<BorrowedBookResponseDto> getOverDueBooks(){
+        LocalDate overDueDate = LocalDate.now().minusDays(borrowingPeriodDays);
+        List<BorrowedBook> overDueBooks = borrowedBookRepository.findOverdueBooks(overDueDate);
+        return overDueBooks.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+    public Double calculateCurrentFine(Long borrowedBookId){
+        BorrowedBook borrowedBook = borrowedBookRepository.findById(borrowedBookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Borrowed book record not found with id : "+borrowedBookId));
+        if (borrowedBook.getReturned()) {
+            return borrowedBook.getFine();           
+        }
+
+        LocalDate dueDate = borrowedBook.getIssueDate().plusDays(borrowingPeriodDays);
+        LocalDate currentDate = LocalDate.now();
+
+        if (currentDate.isAfter(dueDate)) {
+            long daysLate = ChronoUnit.DAYS.between(dueDate, currentDate);
+            return daysLate * finePerDay;
+        }
+        return 0.0;
+    } 
     public BorrowedBookResponseDto mapToResponseDto(BorrowedBook borrowedBook){
         BorrowedBookResponseDto dto = new BorrowedBookResponseDto();
         dto.setId(borrowedBook.getId());
@@ -88,11 +152,13 @@ public class BorrowedBookService {
         dto.setUserName(borrowedBook.getUser().getName());
         dto.setBookId(borrowedBook.getBook().getId());
         dto.setBookTitle(borrowedBook.getBook().getTitle());
-        dto.setIssuDate(borrowedBook.getIssueDate());
+        dto.setIssueDate(borrowedBook.getIssueDate());
         dto.setReturnDate(borrowedBook.getReturnDate());
+        dto.setExpectedReturnDate(borrowedBook.getIssueDate().plusDays(borrowingPeriodDays));
         dto.setFine(borrowedBook.getFine());
         dto.setReturned(borrowedBook.getReturned());
 
         return dto;
     } 
+
 }

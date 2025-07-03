@@ -16,12 +16,13 @@ import com.pranta.LibraryMangement.Entity.User;
 public interface BorrowedBookRepository extends JpaRepository<BorrowedBook, Long> {
     List<BorrowedBook> findByUserAndReturnedFalse(User user);
     List<BorrowedBook> findByReturnedFalse();
+
     @Query("SELECT bb FROM BorrowedBook bb WHERE bb.user.id = :userId AND bb.book.id = :bookId AND bb.returned = false")
-    Optional<BorrowedBook> findActiveBookBorrowByIdAndBookId(
-        @Param("userId") Long userId,
-        @Param("bookId") Long bookId
-    );
+    Optional<BorrowedBook> findActiveBookBorrowByUserIdAndBookId(
+            @Param("userId") Long userId, 
+            @Param("bookId") Long bookId);
+    
     @Query("SELECT bb FROM BorrowedBook bb WHERE bb.issueDate < :date AND bb.returned = false")
     List<BorrowedBook> findOverdueBooks(@Param("date") LocalDate date);
-
+    
 } 

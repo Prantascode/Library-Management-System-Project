@@ -78,16 +78,16 @@ public class DTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class BorrowedBookDto {
-        @NotBlank(message = "Book ID is required")
+        @NotNull(message = "Book ID is required")
         private Long bookId;
-        @NotBlank(message = "User Id is required")
+        @NotNull(message = "User Id is required")
         private Long userId;      
     }
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ReturnBookDto {
-        @NotBlank(message = "Borrowed book Id is required")
+        @NotNull(message = "Borrowed book Id is required")
         private Long borrowedBookId;
     }
     @Data
@@ -99,8 +99,9 @@ public class DTO {
         private String userName;
         private Long bookId;
         private String bookTitle;
-        private LocalDate issuDate;
+        private LocalDate issueDate;
         private LocalDate returnDate;
+        private LocalDate expectedReturnDate;
         private Double fine;
         private Boolean returned;
     }
